@@ -14,7 +14,11 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 import io
 
+<<<<<<< HEAD
+# adding sql queries here
+=======
 
+>>>>>>> a9a5fba (Smart Log inti)
 def clean_date(val):
     """Sanitize a date value for SQL Server: empty/falsy → None, strip 'T'."""
     if not val or not str(val).strip():
@@ -207,10 +211,13 @@ def forgot_password(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def raw_materials(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}RM'
 
@@ -489,6 +496,10 @@ def raw_materials_search(request):
         ('material_code', "r.[Material Code]"),
         ('manufacturer', "r.Manufacturer"),
         ('supplier', "r.Supplier"),
+<<<<<<< HEAD
+=======
+        ('status', "r.Status"),
+>>>>>>> a9a5fba (Smart Log inti)
         ('notes', "r.Notes"),
     ]:
         val = data.get(field, '').strip()
@@ -496,6 +507,7 @@ def raw_materials_search(request):
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
 
+<<<<<<< HEAD
     # Exact match for status fields
     for field, col in [
         ('status', "r.Status"),
@@ -507,6 +519,8 @@ def raw_materials_search(request):
             query += f" AND {col} = %s"
             params.append(val)
 
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     if data.get('product_category'):
         query += " AND p.[ProductCategory] LIKE %s"
         params.append(f'%{data["product_category"]}%')
@@ -582,10 +596,13 @@ def raw_material_generate_qc(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def packaging_materials(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}PM'
 
@@ -836,6 +853,10 @@ def packaging_materials_search(request):
         ('material_code', "r.[Material Code]"),
         ('manufacturer', "r.Manufacturer"),
         ('supplier', "r.Supplier"),
+<<<<<<< HEAD
+=======
+        ('status', "r.Status"),
+>>>>>>> a9a5fba (Smart Log inti)
         ('notes', "r.Notes"),
     ]:
         val = data.get(field, '').strip()
@@ -843,6 +864,7 @@ def packaging_materials_search(request):
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
 
+<<<<<<< HEAD
     # Exact match for status fields
     for field, col in [
         ('status', "r.Status"),
@@ -854,6 +876,8 @@ def packaging_materials_search(request):
             query += f" AND {col} = %s"
             params.append(val)
 
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     query += " ORDER BY r.[QC No.] DESC"
 
     with connection.cursor() as cursor:
@@ -914,10 +938,13 @@ def packaging_material_generate_qc(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def finished_products(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}FP'
 
@@ -1380,7 +1407,11 @@ def pm_mark_reviewed(request, qc_no):
     return Response({'message': 'Chemical check updated'})
 
 @api_view(['POST'])
+<<<<<<< HEAD
 @permission_classes([IsAuthenticated])
+=======
+@permission_classes([AllowAny])
+>>>>>>> a9a5fba (Smart Log inti)
 def finished_products_search(request):
     data = request.data
     current_year = datetime.now().strftime('%y')
@@ -1406,6 +1437,10 @@ def finished_products_search(request):
         ('batch_number', "[Batch No.]"),
         ('qc_number', "[QC No.]"),
         ('material_code', "[Material Code]"),
+<<<<<<< HEAD
+=======
+        ('status', "Status"),
+>>>>>>> a9a5fba (Smart Log inti)
         ('notes', "Notes"),
     ]:
         val = data.get(field, '').strip()
@@ -1413,6 +1448,7 @@ def finished_products_search(request):
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
 
+<<<<<<< HEAD
     # Exact match for status fields
     for field, col in [
         ('status', "Status"),
@@ -1424,6 +1460,8 @@ def finished_products_search(request):
             query += f" AND {col} = %s"
             params.append(val)
 
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     query += " ORDER BY [QC No.] DESC"
 
     with connection.cursor() as cursor:
@@ -1483,11 +1521,15 @@ def finished_product_generate_qc(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+<<<<<<< HEAD
 def products(request): # Material Management
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+def products(request):
+>>>>>>> a9a5fba (Smart Log inti)
     if request.method == 'GET':
         search = request.query_params.get('search', '')
         criteria = request.query_params.get('criteria', 'ProductName')
@@ -1603,10 +1645,13 @@ def product_detail(request, product_id):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if not has_any_role(roles, 'Manager'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute("SELECT ID, Username, Role FROM Users ORDER BY Username")
@@ -1689,10 +1734,13 @@ def user_detail(request, user_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def audit_trail(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if not has_any_role(roles, 'Manager', 'Superuser', 'QA Manager'):
             return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     # New unified AuditLogs query
     user_filter = request.query_params.get('user', '').strip()
     entity_type = request.query_params.get('entity_type', '').strip()
@@ -1757,10 +1805,13 @@ def audit_trail(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def yearly_report(request, category):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     year = request.query_params.get('year', str(datetime.now().year))
     year_suffix = year[-2:]
     offset = int(request.query_params.get('offset', 0))
@@ -1903,10 +1954,13 @@ def drop_username_unique_constraint(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def export_data(request):
+<<<<<<< HEAD
     with connection.cursor() as cursor:
         roles = get_user_roles(cursor, request.user.username)
         if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
              return Response({'error': 'Unauthorized'}, status=403)
+=======
+>>>>>>> a9a5fba (Smart Log inti)
     data = request.data
     category = data.get('category', 'raw')
     year_mode = data.get('year_mode', 'specific')  # 'specific' or 'range'

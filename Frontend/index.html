@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGPI — Management System</title>
+    <meta name="description" content="EGPI Management System — Select your module to continue">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99,102,241,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(16,185,129,0.14) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Grid overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.35);
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #a5b4fc;
+            margin-bottom: 2rem;
+        }
+
+        .logo-badge i { font-size: 0.7rem; }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #e2e8f0 30%, #a5b4fc 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: #64748b;
+            margin-bottom: 3.5rem;
+            font-weight: 400;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .cards { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            position: relative;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.35s;
+            border-radius: 20px;
+        }
+
+        .card.qc::before {
+            background: radial-gradient(ellipse at 30% 30%, rgba(99,102,241,0.2) 0%, transparent 70%);
+        }
+
+        .card.prod::before {
+            background: radial-gradient(ellipse at 30% 30%, rgba(16,185,129,0.2) 0%, transparent 70%);
+        }
+
+        .card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(255,255,255,0.18);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card.qc:hover { border-color: rgba(99,102,241,0.5); }
+        .card.prod:hover { border-color: rgba(16,185,129,0.5); }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card.qc .card-icon {
+            background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.3));
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.4);
+        }
+
+        .card.prod .card-icon {
+            background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(5,150,105,0.3));
+            color: #6ee7b7;
+            border: 1px solid rgba(16,185,129,0.4);
+        }
+
+        .card-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card.qc .card-label { color: #818cf8; }
+        .card.prod .card-label { color: #34d399; }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.55;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-arrow {
+            position: absolute;
+            bottom: 1.75rem;
+            right: 1.75rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .card.qc .card-arrow {
+            background: rgba(99,102,241,0.15);
+            color: #818cf8;
+        }
+
+        .card.prod .card-arrow {
+            background: rgba(16,185,129,0.15);
+            color: #34d399;
+        }
+
+        .card:hover .card-arrow {
+            transform: translate(3px, -3px);
+        }
+
+        .footer {
+            color: #374151;
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+        }
+
+        .status-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.4s; background: #6366f1; }
+        .dot:nth-child(3) { animation-delay: 0.8s; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 300px; height: 300px;
+            background: rgba(99,102,241,0.12);
+            top: -100px; left: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 250px; height: 250px;
+            background: rgba(16,185,129,0.1);
+            bottom: -80px; right: -80px;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <div class="logo-badge">
+            <i class="fas fa-circle-dot"></i>
+            EGPI Management Platform
+        </div>
+
+        <h1>Select Your Module</h1>
+        <p class="subtitle">Choose the system you want to access below</p>
+
+        <div class="cards">
+            <!-- QC System -->
+            <a class="card qc" id="btn-qc" href="/qc/index.html">
+                <div class="card-icon">
+                    <i class="fas fa-microscope"></i>
+                </div>
+                <div class="card-label">Quality Control</div>
+                <div class="card-title">QC System</div>
+                <div class="card-desc">
+                    Raw materials, packaging, finished products analysis and audit trail management.
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-arrow-up-right"></i>
+                </div>
+            </a>
+
+            <!-- Production System -->
+            <a class="card prod" id="btn-production" href="/production/index.html">
+                <div class="card-icon">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <div class="card-label">Production</div>
+                <div class="card-title">Production System</div>
+                <div class="card-desc">
+                    Machine logbooks, operation records, cleaning logs and production audit management.
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-arrow-up-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <div class="status-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            All systems operational &nbsp;·&nbsp; EGPI &copy; 2026
+        </div>
+    </div>
+</body>
+</html>
