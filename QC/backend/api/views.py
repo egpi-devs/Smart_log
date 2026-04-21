@@ -207,6 +207,10 @@ def forgot_password(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def raw_materials(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}RM'
 
@@ -485,13 +489,23 @@ def raw_materials_search(request):
         ('material_code', "r.[Material Code]"),
         ('manufacturer', "r.Manufacturer"),
         ('supplier', "r.Supplier"),
-        ('status', "r.Status"),
         ('notes', "r.Notes"),
     ]:
         val = data.get(field, '').strip()
         if val:
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
+
+    # Exact match for status fields
+    for field, col in [
+        ('status', "r.Status"),
+        ('micro_status', "r.MicroStatus"),
+        ('chemical_status', "r.ChemicalStatus"),
+    ]:
+        val = data.get(field, '').strip()
+        if val:
+            query += f" AND {col} = %s"
+            params.append(val)
 
     if data.get('product_category'):
         query += " AND p.[ProductCategory] LIKE %s"
@@ -568,6 +582,10 @@ def raw_material_generate_qc(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def packaging_materials(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}PM'
 
@@ -818,13 +836,23 @@ def packaging_materials_search(request):
         ('material_code', "r.[Material Code]"),
         ('manufacturer', "r.Manufacturer"),
         ('supplier', "r.Supplier"),
-        ('status', "r.Status"),
         ('notes', "r.Notes"),
     ]:
         val = data.get(field, '').strip()
         if val:
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
+
+    # Exact match for status fields
+    for field, col in [
+        ('status', "r.Status"),
+        ('micro_status', "r.MicroStatus"),
+        ('chemical_status', "r.ChemicalStatus"),
+    ]:
+        val = data.get(field, '').strip()
+        if val:
+            query += f" AND {col} = %s"
+            params.append(val)
 
     query += " ORDER BY r.[QC No.] DESC"
 
@@ -886,6 +914,10 @@ def packaging_material_generate_qc(request):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def finished_products(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     current_year = datetime.now().strftime('%y')
     qc_pattern = f'%{current_year}FP'
 
@@ -1348,7 +1380,7 @@ def pm_mark_reviewed(request, qc_no):
     return Response({'message': 'Chemical check updated'})
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def finished_products_search(request):
     data = request.data
     current_year = datetime.now().strftime('%y')
@@ -1374,13 +1406,23 @@ def finished_products_search(request):
         ('batch_number', "[Batch No.]"),
         ('qc_number', "[QC No.]"),
         ('material_code', "[Material Code]"),
-        ('status', "Status"),
         ('notes', "Notes"),
     ]:
         val = data.get(field, '').strip()
         if val:
             query += f" AND {col} LIKE %s"
             params.append(f'%{val}%')
+
+    # Exact match for status fields
+    for field, col in [
+        ('status', "Status"),
+        ('micro_status', "MicroStatus"),
+        ('chemical_status', "ChemicalStatus"),
+    ]:
+        val = data.get(field, '').strip()
+        if val:
+            query += f" AND {col} = %s"
+            params.append(val)
 
     query += " ORDER BY [QC No.] DESC"
 
@@ -1441,7 +1483,11 @@ def finished_product_generate_qc(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def products(request):
+def products(request): # Material Management
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     if request.method == 'GET':
         search = request.query_params.get('search', '')
         criteria = request.query_params.get('criteria', 'ProductName')
@@ -1557,6 +1603,10 @@ def product_detail(request, product_id):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if not has_any_role(roles, 'Manager'):
+             return Response({'error': 'Unauthorized'}, status=403)
     if request.method == 'GET':
         with connection.cursor() as cursor:
             cursor.execute("SELECT ID, Username, Role FROM Users ORDER BY Username")
@@ -1639,6 +1689,10 @@ def user_detail(request, user_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def audit_trail(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if not has_any_role(roles, 'Manager', 'Superuser', 'QA Manager'):
+            return Response({'error': 'Unauthorized'}, status=403)
     # New unified AuditLogs query
     user_filter = request.query_params.get('user', '').strip()
     entity_type = request.query_params.get('entity_type', '').strip()
@@ -1703,6 +1757,10 @@ def audit_trail(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def yearly_report(request, category):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     year = request.query_params.get('year', str(datetime.now().year))
     year_suffix = year[-2:]
     offset = int(request.query_params.get('offset', 0))
@@ -1845,6 +1903,10 @@ def drop_username_unique_constraint(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def export_data(request):
+    with connection.cursor() as cursor:
+        roles = get_user_roles(cursor, request.user.username)
+        if has_any_role(roles, 'QA Manager') and not has_any_role(roles, 'Manager', 'Superuser'):
+             return Response({'error': 'Unauthorized'}, status=403)
     data = request.data
     category = data.get('category', 'raw')
     year_mode = data.get('year_mode', 'specific')  # 'specific' or 'range'

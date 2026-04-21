@@ -1,10 +1,14 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = '8k%w@t4kj8710yr*p(crkuguqsnwjd@=1=rq0bic0rylc1qs#e'
+# Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -30,11 +34,11 @@ ROOT_URLCONF = 'qc_project.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'Smart Log DB',
-        'USER': 'RMAdmin',
-        'PASSWORD': 'QC@egpi#RM',
-        'HOST': '10.0.100.175',
-        'PORT': '1433',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '1433'),
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',
             'extra_params': 'TrustServerCertificate=yes',
