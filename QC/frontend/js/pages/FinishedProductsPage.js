@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 //  Finished Products Page
 // ──────────────────────────────────────────────
-
+// FinishedProductsPage
 const FinishedProductsPage = {
     rows: [],
     selectedQCs: new Set(),   // QC numbers of selected rows
