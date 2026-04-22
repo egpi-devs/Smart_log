@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 <<<<<<< HEAD
+<<<<<<< HEAD
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,10 +12,15 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 =======
+=======
+>>>>>>> a9a5fba (Smart Log inti)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = '8k%w@t4kj8710yr*p(crkuguqsnwjd@=1=rq0bic0rylc1qs#e'
+<<<<<<< HEAD
+>>>>>>> a9a5fba (Smart Log inti)
+=======
 >>>>>>> a9a5fba (Smart Log inti)
 DEBUG = True
 ALLOWED_HOSTS = ['*']
@@ -42,17 +48,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'mssql',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT', '1433'),
 =======
+=======
+>>>>>>> a9a5fba (Smart Log inti)
         'NAME': 'Smart Log DB',
         'USER': 'RMAdmin',
         'PASSWORD': 'QC@egpi#RM',
         'HOST': '10.0.100.175',
         'PORT': '1433',
+<<<<<<< HEAD
+>>>>>>> a9a5fba (Smart Log inti)
+=======
 >>>>>>> a9a5fba (Smart Log inti)
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',

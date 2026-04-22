@@ -1,7 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.urls import path, include, re_path
 from django.http import HttpResponse
 from django.views.static import serve
+=======
+from django.urls import path, include
+from django.http import HttpResponse
+>>>>>>> a9a5fba (Smart Log inti)
 =======
 from django.urls import path, include
 from django.http import HttpResponse
@@ -18,7 +23,10 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', serve_frontend, name='frontend'),
 <<<<<<< HEAD
+<<<<<<< HEAD
     re_path(r'^(?P<path>.*)$', serve, {'document_root': FRONTEND_DIR}),
+=======
+>>>>>>> a9a5fba (Smart Log inti)
 =======
 >>>>>>> a9a5fba (Smart Log inti)
 ]
