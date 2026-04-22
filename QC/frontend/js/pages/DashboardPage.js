@@ -1,7 +1,8 @@
 // ──────────────────────────────────────────────
 //  Dashboard Page
 // ──────────────────────────────────────────────
-
+// ──────────────────────────────────────────────
+// # DashboardPage  page here
 const DashboardPage = {
     data: { raw: 0, packaging: 0, finished: 0, users: 0 },
 
