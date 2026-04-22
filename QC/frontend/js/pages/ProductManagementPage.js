@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 //  Product Management Page
 // ──────────────────────────────────────────────
-
+// ProductManagementPage
 const ProductManagementPage = {
     rows: [],
     selectedIdx: -1,
